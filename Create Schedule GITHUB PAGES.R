@@ -54,4 +54,4 @@ withtitle <- htmlwidgets::prependContent(table,
 ))
 
 browsable(withtitle)
-
+save_html(withtitle, "index.html") 
