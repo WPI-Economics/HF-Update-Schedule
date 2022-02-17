@@ -16,7 +16,7 @@ today <- "2022-02-17" #TYPE REQUIRED DATE HERE
 df <- readRDS(file = paste0("../HF-Update-Schedule/THF_Update_Schedule_",today,".RDS"))
 
 #The table 
-table <- df %>% rename("Sprint end date" = `sprint_end_var`) %>% 
+table <- df %>% 
   filter(!`Publication frequency` == "RETIRED") %>% 
   select(-`New data available`, 
                        -Topic_Subtopic, 
