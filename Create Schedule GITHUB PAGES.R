@@ -26,6 +26,12 @@ table <- df %>% rename("Sprint end date" = `sprint_end_var`) %>%
   
   reactable(groupBy = "Initial sprint (adjusted)" ,
             
+            columns = list(
+              url = colDef(html = T, cell = function(value, index){
+                sprintf('<a href="%s" target="_blank">%s</a>',df$url[index], value)
+              }))
+            ,
+            
             defaultPageSize = 19,
             highlight = T,
             striped = T,
