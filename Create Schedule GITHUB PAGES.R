@@ -12,7 +12,7 @@ library(highcharter)
 library(reactable)
 library(htmltools)
 
-today <- "2022-02-17" #TYPE REQUIRED DATE HERE
+today <- "2022-06-16" #TYPE REQUIRED DATE HERE
 df <- readRDS(file = paste0("../HF-Update-Schedule/THF_Update_Schedule_",today,".RDS"))
 
 #The table 
