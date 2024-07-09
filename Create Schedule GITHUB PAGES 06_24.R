@@ -15,22 +15,97 @@ library(htmltools)
 today <- "2024-07-08" #TYPE REQUIRED DATE HERE
 df <- read_csv(file = "../HF-Evidence-Hub/Schedule and planning/THF Schedule data July 2024.csv")
 
+#slugs
+slugs <- googlesheets4::read_sheet(ss = "1sRo1wyOvrnG5JwY6D7LbOmn9UnPK8ABNaZ0Il4_WDtk", sheet = "INDICATORS" ) %>% select(Index, url, `Current/Retired`) %>% 
+  filter(is.na(`Current/Retired`)) %>% 
+  select(-`Current/Retired`) %>% 
+  unique()
+
+#merge
+df <- df %>% left_join(slugs, by = c("index" = "Index"))
+
+
+#remove retired, on hold etc.
+#slugs
+notupdating <- googlesheets4::read_sheet(ss = "1sRo1wyOvrnG5JwY6D7LbOmn9UnPK8ABNaZ0Il4_WDtk", sheet = "INDICATORS" ) %>% select(Index, url, `Current/Retired`) %>% 
+  filter(!is.na(`Current/Retired`)) %>% 
+  select(-`Current/Retired`) %>% 
+  unique()
+
+
+df <- df %>% filter(!index %in% notupdating$Index)
+
+#pare dataset down
+df <- df %>% select(
+ index,
+ subtitle,
+ Topic,
+ `Sub-topic`,
+ url,
+ Sprint.x,
+ Sprint.y,
+ `Expected next`,
+"Data source code" =  data.source.code.full,
+"Data source" = data.source.product,
+"Data source producer" =  data.source.producer
+ 
+)
+
+
+#sprint allocation revised
+#Sprint 11 set for September 2024
+#Sprint 11.5 set for November 2024
+#Sprint 12 set for January 2025
+#Sprint 13 set for February 2025
+
+df <- df %>% 
+  mutate(`Sprints revised 2024/25` = case_when(
+    `Expected next` < "2024-07-13" ~ "Sprint 10",
+    `Expected next` < "2024-08-31" & `Expected next` > "2024-07-13"  ~ "Sprint 11",
+    `Expected next` < "2024-11-05" & `Expected next` > "2024-08-31" ~ "Sprint 11.5",
+    `Expected next` < "2025-01-30" & `Expected next` > "2024-11-05" ~ "Sprint 12", #NEED TO SPLIT Sp12 into Sp13 as TOO MANY
+    `Expected next` > "2025-01-30" & `Expected next` < "2025-04-01" ~ "Sprint 13",
+    TRUE ~ "2025/26"
+  ))
+
+#allocate Friends family community to Sp13 if currently Sprints revised is Sprint 12
+df <- df %>% 
+  mutate(`Sprints revised 2024/25` = case_when(
+    Topic == "Friends, family and community" & `Sprints revised 2024/25` == "Sprint 12" ~ "Sprint 13",
+    Topic == "Housing" & `Sprints revised 2024/25` == "Sprint 12" ~ "Sprint 13",
+    TRUE ~ `Sprints revised 2024/25`
+  )
+  )
+
+
 #The table 
 table <- df %>% 
-  filter(!`Publication frequency` == "RETIRED") %>% 
-  select(-`New data available`, 
-                       -Topic_Subtopic, 
-                       -`Last publication date2`, 
-                       -`Last publication date` ) %>% 
-  rename("Chart title" = `chart title 2 published`, "Data source" = `Data source (clean)`) %>% 
+
+  select(-Sprint.x, -Sprint.y ) %>%
+              
+  rename("Chart title" = subtitle,
+         "Data release data (approx)" = `Expected next`) %>% 
+  arrange(`Data release data (approx)`) %>% 
   
-  reactable(groupBy = "Initial sprint (adjusted)" ,
+  reactable(groupBy = "Sprints revised 2024/25", 
             
             columns = list(
-              url = colDef(html = T, cell = function(value, index){
-                sprintf('<a href="%s" target="_blank">%s</a>',df$url[index], value)
-              }))
-            ,
+              index = colDef(aggregate = "unique"),
+              `Topic`=  colDef(aggregate = "frequency"),
+              
+              "Chart title" = colDef(
+                width = 300,
+                html = T,
+                cell = function(value, index){
+                  label <- df$subtitle[index]
+                  sprintf('<a href="%s" target="_blank">%s</a>',df$url[index], label)
+                }),
+              
+              "Data source" = colDef(width = 300),
+              url = colDef(show = F)
+              
+            ),
+            
             
             defaultPageSize = 19,
             highlight = T,
