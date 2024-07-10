@@ -127,7 +127,7 @@ table
 
 withtitle <- htmlwidgets::prependContent(table, 
                                          h2(class = "title", style = "font-family: Arial; color: #e84245",
-                                            ("THF Evidence Hub Publication Timetable"), 
+                                            ("THF Evidence Hub Publication Timetable 2024/25"), 
                                          
                                             p(style = "font-family: Arial;font-weight: normal;font-size: 12px;color: #000000",
                                                paste0("Last updated ", Sys.Date() )
@@ -135,4 +135,94 @@ withtitle <- htmlwidgets::prependContent(table,
 ))
 
 browsable(withtitle)
+
+
+
+
+#plot
+#remove millenium cohort and WAS indicators
+df <- df %>% filter(!is.na(subtitle))
+
+#This one plots colours by topic
+plot_topic <-  highchart() %>% 
+  
+  #these are the dots for each indicator
+  hc_add_series(data = df[!is.na(df$`Expected next`),],
+                type = "scatter",
+                hcaes(x = `Expected next`, #`Update month.sortonme`, 
+                      y = row_number(),
+                      gw1 = `subtitle`, 
+                      gw2 = index,
+                      gw3 = `Topic`,
+                      gw4 = `Sub-topic`,
+                      #color = `Topic colours`,
+                      group = Topic),
+                showInLegend = T,
+                
+                marker = list(symbol = "circle",
+                              radius = 4
+                              # lineColor = colours.obj2[[1]]
+                )
+  )  %>%
+  
+  hc_yAxis(visible = T) %>% 
+  hc_xAxis(type = "datetime") %>% 
+  
+  hc_tooltip(pointFormat = "Date: {point.x:%Y-%m-%d} <br> Title: {point.gw1} <br> 
+             Index: {point.gw2} <br> Topic: {point.gw3} <br> 
+             Sub-topic: {point.gw4} <br>", 
+             shared = TRUE
+  ) %>% 
+  
+  #hc_colors(c(colours.obj2[2:3],colours.obj[c(6,4)],colours.obj2[6],colours.obj[3]  )) %>% 
+  
+  hc_title(text = "Indicator release dates by Topic",
+           align = "left",
+           style = list(fontSize ="18px",color = "#000000",
+                        fontFamily = "Arial", fontWeight = "400" ))
+plot_topic
+
+
+#This one plots colours by topic
+plot_sprint <-  highchart() %>% 
+  
+  #these are the dots for each indicator
+  hc_add_series(data = df[!is.na(df$`Expected next`),],
+                type = "scatter",
+                hcaes(x = `Expected next`, #`Update month.sortonme`, 
+                      y = row_number(),
+                      gw1 = `subtitle`, 
+                      gw2 = index,
+                      gw3 = `Topic`,
+                      gw4 = `Sub-topic`,
+                      #color = `Topic colours`,
+                      group = `Sprints revised 2024/25`),
+                showInLegend = T,
+                
+                marker = list(symbol = "circle",
+                              radius = 4
+                              # lineColor = colours.obj2[[1]]
+                )
+  )  %>%
+  
+  hc_yAxis(visible = T) %>% 
+  hc_xAxis(type = "datetime") %>% 
+  
+  hc_tooltip(pointFormat = "Date: {point.x:%Y-%m-%d} <br> Title: {point.gw1} <br> 
+             Index: {point.gw2} <br> Topic: {point.gw3} <br> 
+             Sub-topic: {point.gw4} <br>", 
+             shared = TRUE
+  ) %>% 
+  
+  #hc_colors(c(colours.obj2[2:3],colours.obj[c(6,4)],colours.obj2[6],colours.obj[3]  )) %>% 
+  
+  hc_title(text = "Indicator release dates by Topic",
+           align = "left",
+           style = list(fontSize ="18px",color = "#000000",
+                        fontFamily = "Arial", fontWeight = "400" ))
+plot_sprint
+
+
+
+
 save_html(withtitle, "index.html") 
