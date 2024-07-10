@@ -141,7 +141,7 @@ browsable(withtitle)
 
 #plot
 #remove millenium cohort and WAS indicators
-df <- df %>% filter(!is.na(subtitle))
+df <- df %>% filter(!is.na(subtitle)) %>% arrange(`Expected next`)
 
 #This one plots colours by topic
 plot_topic <-  highchart() %>% 
@@ -176,7 +176,7 @@ plot_topic <-  highchart() %>%
   
   #hc_colors(c(colours.obj2[2:3],colours.obj[c(6,4)],colours.obj2[6],colours.obj[3]  )) %>% 
   
-  hc_title(text = "Indicator release dates by Topic",
+  hc_title(text = "Indicator release dates by Sprint",
            align = "left",
            style = list(fontSize ="18px",color = "#000000",
                         fontFamily = "Arial", fontWeight = "400" ))
