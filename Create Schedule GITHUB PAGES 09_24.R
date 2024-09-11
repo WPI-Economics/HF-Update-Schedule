@@ -11,9 +11,38 @@ library(googledrive)
 library(highcharter)
 library(reactable)
 library(htmltools)
+library(downloadthis)
 
 today <- "2024-09-09" #TYPE REQUIRED DATE HERE
 df <- read_csv(file = "../HF-Evidence-Hub/Schedule and planning/THF Schedule data Sept 2024.csv")
+
+
+sprintdates <- tibble(
+  Sprint = c("Sprint11",
+             "ad-hoc-Oct",
+             "ad-hoc-Nov", 
+             "Sprint12", 
+             "Sprint13", 
+             "Sprint14", 
+             "Sprint15", 
+             "Sprint16", 
+             "Sprint17", 
+             "Sprint18"),
+  
+  `Delivery date` = as.Date( c("2024-10-01",
+                               "2024-10-18",
+                               "2024-11-22", 
+                               "2025-01-06", 
+                               "2025-02-03", 
+                               "2025-03-03", 
+                               "2025-04-07", 
+                               "2025-05-05", 
+                               "2025-06-02", 
+                               "2025-07-31"))
+)
+
+
+df <- left_join(df, sprintdates, by = "Sprint")
 
 #slugs from the MASTER list
 slugs <- googlesheets4::read_sheet(ss = "1sRo1wyOvrnG5JwY6D7LbOmn9UnPK8ABNaZ0Il4_WDtk", sheet = "INDICATORS" ) %>% select(Index, url, `Current/Retired`) %>% 
@@ -44,6 +73,7 @@ df <- df %>% select(
  `Sub-topic`,
  url,
  Sprint,
+ `Delivery date`,
   `Expected next`,
 "Data source code" =  data.source.code.full,
 "Data source" = data.source.product,
@@ -93,7 +123,7 @@ df <- df %>% left_join(master.gdoc.titles, by = c("index" = "Index")) %>%
 
 df <- df %>% arrange(`Expected next`) %>% 
   #move subtitle column to second column
-  select(index, subtitle, everything())
+  select(index, subtitle,`Delivery date`, everything())
 
 #The table 
 table <- df %>% 
@@ -148,7 +178,10 @@ withtitle <- htmlwidgets::prependContent(table,
                                             p(style = "font-family: Arial;font-weight: normal;font-size: 12px;color: #000000",
                                                paste0("Last updated ", Sys.Date() )
                                             ) 
-))
+),download_this(df, 
+                output_name = "Sprint timetable",
+                output_extension = ".xlsx", 
+                button_label = "Download data"), p())
 
 browsable(withtitle)
 
