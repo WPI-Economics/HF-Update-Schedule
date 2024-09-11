@@ -29,7 +29,7 @@ sprintdates <- tibble(
              "Sprint17", 
              "Sprint18"),
   
-  `Delivery date` = as.Date( c("2024-10-01",
+  `Delivery date` = as.Date( c("2024-09-30",
                                "2024-10-18",
                                "2024-11-22", 
                                "2025-01-06", 
@@ -138,7 +138,7 @@ table <- df %>%
             columns = list(
               index = colDef(aggregate = "unique"),
               `Topic`=  colDef(aggregate = "frequency"),
-              
+              `Delivery date` = colDef(aggregate = "unique"),
               "Chart title" = colDef(
                 width = 300,
                 html = T,
