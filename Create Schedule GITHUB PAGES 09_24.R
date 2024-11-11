@@ -13,7 +13,7 @@ library(reactable)
 library(htmltools)
 library(downloadthis)
 
-today <- "2024-09-09" #TYPE REQUIRED DATE HERE
+today <- "2024-11-11" #TYPE REQUIRED DATE HERE
 df <- read_csv(file = "../HF-Evidence-Hub/Schedule and planning/THF Schedule data Sept 2024.csv")
 
 
