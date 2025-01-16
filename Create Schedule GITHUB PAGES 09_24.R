@@ -1,5 +1,5 @@
-#'Publication table pre-procesing
-#'This produces the RDS data file saved in seperate github pages enabled repo `HF_Update_Schedule`
+#'Publication table pre-processing
+#'This produces the RDS data file saved in separate github pages enabled repo `HF_Update_Schedule`
 
 ## ---- charting publication dates ----
 
