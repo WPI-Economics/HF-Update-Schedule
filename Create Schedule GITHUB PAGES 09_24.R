@@ -14,8 +14,8 @@ library(reactable)
 library(htmltools)
 library(downloadthis)
 
-today <- "2024-11-13" #TYPE REQUIRED DATE HERE
-df <- read_csv(file = "../HF-Evidence-Hub/Schedule and planning/THF Schedule data Sept 2024.csv")
+today <- "2025-16-01" #TYPE REQUIRED DATE HERE
+df <- read_csv(file = "../HF-Evidence-Hub/Schedule and planning/THF Schedule data Jan 2025.csv")
 
 
 sprintdates <- tibble(
@@ -33,13 +33,13 @@ sprintdates <- tibble(
   `Delivery date` = as.Date( c("2024-09-30",
                                "2024-10-18",
                                "2024-11-22", 
-                               "2025-01-06", 
+                               "2025-01-13", 
                                "2025-02-03", 
                                "2025-03-03", 
                                "2025-04-07", 
                                "2025-05-05", 
                                "2025-06-02", 
-                               "2025-07-31"))
+                               "2025-07-07"))
 )
 
 
