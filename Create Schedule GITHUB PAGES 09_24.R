@@ -1,5 +1,6 @@
 #'Publication table pre-processing
 #'This produces the RDS data file saved in separate github pages enabled repo `HF_Update_Schedule`
+#' USE VERSION 4.4.2 as downloadthis is not working in previous versions 
 
 ## ---- charting publication dates ----
 
